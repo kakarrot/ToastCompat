@@ -24,7 +24,7 @@ class ToastCompat
  */ private constructor(context: Context, private val toast: Toast) : Toast(context) {
 
     fun setBadTokenListener(listener: BadTokenListener): ToastCompat {
-        val context = view!!.context
+        val context = view?.context
         if (context is SafeToastContext) {
             context.setBadTokenListener(listener)
         }
@@ -101,8 +101,10 @@ class ToastCompat
         fun makeText(context: Context, text: CharSequence?, duration: Int): ToastCompat {
             // We cannot pass the SafeToastContext to Toast.makeText() because
             // the View will unwrap the base context and we are in vain.
-            @SuppressLint("ShowToast") val toast = Toast.makeText(context, text, duration)
-            setContextCompat(toast.view!!, SafeToastContext(context, toast))
+            val toast = Toast.makeText(context, text, duration)
+            toast.view?.let { view ->
+                setContextCompat(view, SafeToastContext(context, toast))
+            }
             return ToastCompat(context, toast)
         }
 
